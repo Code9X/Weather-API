@@ -1,14 +1,17 @@
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using WeatherApp.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WeatherApp.Controllers
 {
     public class HomeController : Controller
     {
-        private List<string> cityNames;
         private readonly IConfiguration _configuration;
         private readonly ILogger<HomeController> _logger;
 
@@ -17,22 +20,21 @@ namespace WeatherApp.Controllers
             _configuration = configuration;
             _logger = logger;
         }
-        public async Task<ActionResult> Index()
+        public async Task<IActionResult> Index()
         {
             List<string> cityNames = GetCityNames();
             ViewBag.CityList = cityNames;
             return View();
         }
-
         [HttpPost]
-        public async Task<ActionResult> Index(string city)
+        public async Task<IActionResult> Index(string city)
         {
             if (!string.IsNullOrEmpty(city))
             {
                 WeatherData weatherData = await GetWeatherData(city);
-                List<string> cityNames = GetCityNames(); // Get city names again
-                ViewBag.CityList = cityNames; // pass the city list
-                ViewBag.SelectedCity = city; // pass the selected city
+                List<string> cityNames = GetCityNames();
+                ViewBag.CityList = cityNames;
+                ViewBag.SelectedCity = city;
                 return View(weatherData);
             }
             return View();
@@ -49,7 +51,6 @@ namespace WeatherApp.Controllers
                 "New Delhi"
             };
         }
-
         private async Task<WeatherData> GetWeatherData(string city)
         {
             using (var client = new HttpClient())
@@ -69,13 +70,29 @@ namespace WeatherApp.Controllers
                     string cityName = data["name"];
                     string description = data["weather"][0]["description"];
                     double temperature = data["main"]["temp"];
+                    double feelsLike = data["main"]["feels_like"];
+                    double minTemperature = data["main"]["temp_min"];
+                    double maxTemperature = data["main"]["temp_max"];
+                    int pressure = data["main"]["pressure"];
+                    int humidity = data["main"]["humidity"];
+                    int visibility = data["visibility"];
+                    double windSpeed = data["wind"]["speed"];
+                    string icon = data["weather"][0]["icon"]; // Extract the icon
 
                     // Create a new WeatherData object with the extracted data
                     WeatherData weatherData = new WeatherData
                     {
                         City = cityName,
                         Description = description,
-                        Temperature = temperature
+                        Temperature = temperature,
+                        FeelsLike = feelsLike,
+                        MinTemperature = minTemperature,
+                        MaxTemperature = maxTemperature,
+                        Pressure = pressure,
+                        Humidity = humidity,
+                        Visibility = visibility,
+                        WindSpeed = windSpeed,
+                        Icon = icon // Assign the icon to the property
                     };
 
                     return weatherData;
@@ -95,4 +112,3 @@ namespace WeatherApp.Controllers
         }
     }
 }
-
