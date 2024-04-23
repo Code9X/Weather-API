@@ -1,0 +1,51 @@
+﻿@model WeatherApp.Models.WeatherData
+
+@{
+    ViewBag.Title = "Weather Details";
+}
+
+<h2>Weather Details</h2>
+
+@if (Model == null)
+{
+    @using (Html.BeginForm("Index", "Home", FormMethod.Post))
+    {
+        <div class="form-group">
+            @Html.Label("Select City:")
+            <select name="city" class="form-control">
+                <option value="">-- Select City --</option>
+                @if (ViewBag.CityList != null)
+                {
+                    foreach (var city in ViewBag.CityList)
+                    {
+                        <option value="@city">@city</option>
+                    }
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Get Weather</button>
+    }
+}
+else
+{
+    @using (Html.BeginForm("Index", "Home", FormMethod.Post))
+    {
+        <div class="form-group">
+            @Html.Label("Select City:")
+            <select name="city" class="form-control">
+                <option value="">-- Select City --</option>
+                @if (ViewBag.CityList != null)
+                {
+                    foreach (var city in ViewBag.CityList)
+                    {
+                        <option value="@city" selected="@(city == ViewBag.SelectedCity)">@city</option>
+                    }
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Get Weather</button>
+    }
+
+    <p><strong>Description:</strong> @Model.Description</p>
+    <p><strong>Temperature:</strong> @Model.Temperature &deg;C</p>
+}
