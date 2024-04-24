@@ -15,5 +15,6 @@ namespace WeatherApp.Models
         public int Humidity { get; set; }
         public int Visibility { get; set; }
         public double WindSpeed { get; set; }
+
     }
 }

@@ -48,8 +48,9 @@ namespace WeatherApp.Controllers
                 "Chicago",
                 "Houston",
                 "Tokyo",
-                "New Delhi"
-            };
+                "New Delhi",
+				"Kochi"
+			};
         }
         private async Task<WeatherData> GetWeatherData(string city)
         {
@@ -77,7 +78,7 @@ namespace WeatherApp.Controllers
                     int humidity = data["main"]["humidity"];
                     int visibility = data["visibility"];
                     double windSpeed = data["wind"]["speed"];
-                    string icon = data["weather"][0]["icon"]; // Extract the icon
+                    string icon = data["weather"][0]["icon"];
 
                     // Create a new WeatherData object with the extracted data
                     WeatherData weatherData = new WeatherData
